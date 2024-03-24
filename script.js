@@ -9,21 +9,20 @@ const loader = document.querySelector(".loader");
 
 // let apiQuotes = [];
 
-// Show Loading
-function loading() {
+
+function showLoadingSpinner() {
   loader.hidden = false;
   quoteContainer.hidden = true;
 }
 
-// Hide Loading
-function complete() {
+function removeLoadingSpinner() {
   quoteContainer.hidden = false;
   loader.hidden = true;
 }
 
 // Show New Quote
 function newQuotes(apiQuotes) {
-  loading();
+  showLoadingSpinner();
   const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
   // const quote = apiQuotes[12];
   // console.log(apiQuotes);
@@ -40,11 +39,11 @@ function newQuotes(apiQuotes) {
 
   // Set Quote, Hide Loader
   quoteText.textContent = quote.text;
-  complete();
+  removeLoadingSpinner();
 }
 
 async function getQuotes() {
-  loading();
+  showLoadingSpinner();
   const apiURL = "https://jacintodesign.github.io/quotes-api/data/quotes.json";
 
   try {
@@ -52,10 +51,24 @@ async function getQuotes() {
     const apiQuotes = await response.json();
     newQuotes(apiQuotes);
   } catch (error) {
-    // Catch errror
     console.error("try again");
   }
 }
+
+// useQuotableAPI
+async function getQuotes2(){
+  const proxyURL = 'https://cors-anywhere.herokuapp.com/'
+  const apiURL = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json'
+  try{
+    const response = await fetch(proxyURL + apiURL)
+    const data = await response.json()
+    // newQuotes(data)
+  } catch {
+    // getQuotes2()
+    // console.log('error please try again', error);
+  } 
+}
+getQuotes2()
 
 // Tweet Quote
 function tweetQuote() {
@@ -64,10 +77,6 @@ function tweetQuote() {
   window.open(twitterUrl, "_blank");
 }
 
-// function test() {
-//   console.log(quoteText.textContent);
-//   console.log(authorText.textContent);
-// }
 
 newQuoteBtn.addEventListener("click", getQuotes);
 twitterBtn.addEventListener("click", tweetQuote);
